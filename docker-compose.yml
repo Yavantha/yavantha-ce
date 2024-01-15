@@ -1,0 +1,102 @@
+version: '3'
+services:
+
+    prism:
+        image: ghcr.io/yavantha/prism:latest
+        depends_on: 
+            prismdb:
+                condition: service_healthy
+        ports:
+            - "8080:8080"
+        restart: always
+        environment:
+            PRISM_CONFIG: /usr/local/yavantha/prism-config.groovy
+            YAVANTHA_ID: "40FB9F7F-D832-4DFC-80D7-1C92133BA3B3"
+            PRISM_CRAWLER_URL: "http://crawler:8080"
+        healthcheck:
+            test: curl --fail http://localhost:8080 || exit 1
+            interval: 60s
+            retries: 5
+            start_period: 20s
+            timeout: 10s
+        volumes:
+            - ./prism_config:/usr/local/yavantha 
+                
+    prismdb:
+        image: postgres:16
+        # ports:
+        #     - "5432:5432"
+        restart: always
+        environment:
+            TZ: "Europe/Paris"
+            POSTGRES_USER: "prism"
+            POSTGRES_PASSWORD: "prism"
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U prism"]
+            interval: 20s
+            timeout: 5s
+            retries: 10
+        volumes:
+            - ./prismdb_data:/var/lib/postgresql/data
+
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
+        mem_limit: 1g
+        memswap_limit: 1g
+        # ports:
+        #     - "9200:9200"
+        #     - "9300:9300"
+        environment:
+            TZ: "Europe/Paris"
+            discovery.type: single-node
+
+    crawler:
+        image: ghcr.io/yavantha/crawler:latest
+        depends_on:
+            crawlerdb:
+                condition: service_healthy
+            drill:
+                condition: service_started
+            prism:
+                condition: service_healthy
+        # ports:
+        #     - "8081:8080"
+        environment:
+            TZ: "Europe/Paris"
+            YAVANTHA_ID: "40FB9F7F-D832-4DFC-80D7-1C92133BA3B3"
+            CRAWLER_PRISM_URL: "http://prism:8080/"
+            CRAWLER_DRILL_URL: "http://drill:8047/"
+            CRAWLER_JDBC_URL: "jdbc:postgresql://crawlerdb:5432/crawler"
+            CRAWLER_JDBC_USER: "crawler"
+            CRAWLER_JDBC_PASSWORD: "crawler"
+            CRAWLER_JDBC_DRIVER: "org.postgresql.Driver"
+            CRAWLER_DRILL_JDBC_CONNECTION: drillbit
+            CRAWLER_DRILL_JDBC_HOSTS: drill:31010
+
+    crawlerdb:
+        image: postgres:16
+        restart: always
+        # ports:
+        #     - "5433:5432"
+        environment:
+            TZ: "Europe/Paris"
+            POSTGRES_USER: "crawler"
+            POSTGRES_PASSWORD: "crawler"
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U crawler"]
+            interval: 20s
+            timeout: 5s
+            retries: 10
+        volumes:
+            - ./crawlerdb_data:/var/lib/postgresql/data
+
+    drill:
+        image: ghcr.io/yavantha/ydrill:latest
+        # ports:
+        #     - "8047:8047"
+        stdin_open: true
+        environment:
+            TZ: "Europe/Paris"
+        volumes:
+            - ./drill_config:/drill_config
+            - ./drill_data:/drill_data
