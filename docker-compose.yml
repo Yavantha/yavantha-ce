@@ -11,6 +11,7 @@ services:
         restart: always
         environment:
             PRISM_CONFIG: /usr/local/yavantha/prism-config.groovy
+            YAVANTHA_DRILL_TEMPLATES: /usr/local/yavantha/drill_templates.json
             YAVANTHA_ID: "40FB9F7F-D832-4DFC-80D7-1C92133BA3B3"
             PRISM_CRAWLER_URL: "http://crawler:8080"
         healthcheck:

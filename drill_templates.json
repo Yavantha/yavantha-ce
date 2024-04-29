@@ -1,0 +1,388 @@
+{
+  "S3": {
+    "type": "file",
+    "connection": "s3a://bucket/",
+    "workspaces": {
+      "root": {
+        "location": "/directory",
+        "writable": false,
+        "defaultInputFormat": null,
+        "allowAccessOutsideWorkspace": false
+      }
+    },
+    "config": {
+      "fs.s3a.secret.key": "{password}",
+      "fs.s3a.access.key": "{user}",
+      "fs.s3a.endpoint": "http://localhost:9000",
+      "fs.s3a.impl.disable.cache": "true"
+    },
+    "formats": {
+      "parquet": {
+        "type": "parquet"
+      },
+      "avro": {
+        "type": "avro",
+        "extensions": [
+          "avro"
+        ]
+      },
+      "json": {
+        "type": "json",
+        "extensions": [
+          "json"
+        ]
+      },
+      "csv": {
+        "type": "text",
+        "extensions": [
+          "csv"
+        ],
+        "lineDelimiter": "\n",
+        "fieldDelimiter": ",",
+        "quote": "\"",
+        "escape": "\"",
+        "comment": "#",
+        "extractHeader": true
+      },
+      "excel": {
+        "type": "excel",
+        "allTextMode": true
+      },
+      "xml": {
+        "type": "xml",
+        "extensions": [
+          "xml"
+        ],
+        "dataLevel": 2
+      }	  	  
+    }
+  },
+  "File": {
+    "type": "file",
+    "connection": "file:///",
+    "workspaces": {
+      "root": {
+        "location": "/mnt",
+        "writable": true,
+        "defaultInputFormat": null,
+        "allowAccessOutsideWorkspace": false
+      }
+    },
+    "formats": {
+      "parquet": {
+        "type": "parquet"
+      },
+      "avro": {
+        "type": "avro",
+        "extensions": [
+          "avro"
+        ]
+      },
+      "json": {
+        "type": "json",
+        "extensions": [
+          "json"
+        ]
+      },
+      "csv": {
+        "type": "text",
+        "extensions": [
+          "csv"
+        ],
+        "lineDelimiter": "\n",
+        "fieldDelimiter": ",",
+        "quote": "\"",
+        "escape": "\"",
+        "comment": "#",
+        "extractHeader": true
+      },
+      "excel": {
+        "type": "excel",
+        "allTextMode": true
+      },
+      "xml": {
+        "type": "xml",
+        "extensions": [
+          "xml"
+        ],
+        "dataLevel": 2
+      }	  	  
+    }
+  },
+  "Elastic": {
+      "type": "elastic",
+	  "hosts": [
+	    "http://localhost:9200"
+	  ],
+      "enabled": true
+  },
+  "Mongo": {
+      "type": "mongo",
+      "connection": "mongodb://{user}:{password}@localhost:27017/",
+      "enabled": true
+  },
+  "Splunk": {
+      "type":"splunk",
+      "username": "{user}",
+      "password": "{password}",
+      "hostname": "localhost",
+      "port": 8089,
+      "earliestTime": "-14d",
+      "latestTime": "now",
+      "enabled": true
+  },
+  "Cassandra": {
+      "type" : "cassandra",
+      "username" : "{user}",
+      "password" : "{password}",
+      "host" : "localhost",
+      "port" : 9042,
+      "enabled": true
+  },
+  "Dropbox": {
+      "type": "file",
+      "connection": "dropbox:///",
+      "config": {
+            "dropboxAccessToken": "{password}"
+      },
+      "workspaces": {
+        "root": {
+        "location": "/directory",
+        "writable": false,
+        "defaultInputFormat": null,
+        "allowAccessOutsideWorkspace": false
+        }
+      }
+  },
+  "Druid": {
+      "type" : "druid",
+      "brokerAddress" : "http://localhost:8082",
+      "coordinatorAddress": "http://localhost:8081",
+      "averageRowSizeBytes": 100,
+      "enabled" : false
+  },
+  "Hbase": {
+      "type": "hbase",
+      "config": {
+            "hbase.zookeeper.quorum": "10.10.100.62,10.10.10.52,10.10.10.53",
+            "hbase.zookeeper.property.clientPort": "2181"
+      },
+      "size.calculator.enabled": false,
+      "enabled": true
+  },
+  "Phoenix": {
+      "type": "phoenix",
+      "host": "the.queryserver.hostname",
+      "port": 8765,
+      "props": {
+         "phoenix.query.timeoutMs": 60000
+      }
+  },
+  "Hive": {
+      "type": "hive",
+      "configProps": {
+         "hive.metastore.sasl.enabled": "false",
+         "fs.default.name": "file:///",
+         "datanucleus.schema.autoCreateAll": "true",
+         "javax.jdo.option.ConnectionURL": "jdbc:derby:;databaseName=../sample-data/drill_hive_db;create=true",
+         "hive.metastore.uris": "",
+         "hive.metastore.schema.verification": "false",
+         "hive.metastore.warehouse.dir": "/tmp/drill_hive_wh"
+      }
+  },
+  "Hadoop": {
+      "type": "file",
+      "enabled": true,
+      "connection": "hdfs://<IP Address>:<Port>/",
+      "workspaces": {
+         "root": {
+            "location": "/directory",
+            "writable": false,
+            "defaultInputFormat": null
+         }
+      },
+      "formats": {
+        "parquet": {
+          "type": "parquet"
+        },
+        "avro": {
+          "type": "avro",
+          "extensions": [
+            "avro"
+          ]
+        },
+        "json": {
+          "type": "json",
+          "extensions": [
+            "json"
+          ]
+        },
+        "csv": {
+          "type": "text",
+          "extensions": [
+            "csv"
+          ],
+          "lineDelimiter": "\n",
+          "fieldDelimiter": ",",
+          "quote": "\"",
+          "escape": "\"",
+          "comment": "#",
+          "extractHeader": true
+        }
+      }
+  },
+  "Kafka":  {
+      "type": "kafka",
+      "kafkaConsumerProps": {
+          "key.deserializer":   "org.apache.kafka.common.serialization.ByteArrayDeserializer",
+          "auto.offset.reset": "earliest",
+          "bootstrap.servers": "localhost:9092",
+          "group.id": "drill-query-consumer-1",
+          "enable.auto.commit": "true",
+          "value.deserializer": "org.apache.kafka.common.serialization.ByteArrayDeserializer",
+          "session.timeout.ms": "30000"
+     },
+     "enabled": true
+  },
+  "Api":   {
+      "type": "http",
+      "cacheResults": false,
+      "timeout": 5,
+      "connections": {
+         "jira": {
+            "url": "https://<project>.atlassian.net/rest/api/3/",
+            "method": "GET",
+            "dataPath": "issues",
+            "headers": {
+                "Accept": "application/json"
+             },
+            "authType": "basic",
+            "userName": "<username>",
+            "password": "<API Key>",
+            "postBody": null
+         }
+      },
+      "enabled": true
+   },  
+   "Azblob" :{
+       "type": "file",
+       "connection": "wasbs://CONTAINER@ACCOUNT_NAME.blob.core.windows.net",
+       "config": {
+	      "fs.azure.account.key.STORAGE_ACCOUNT_NAME.blob.core.windows.net": "AUTHENTICATION_KEY"
+       },	   
+       "workspaces": {
+           "root": {
+           "location": "/",
+           "writable": false,
+           "defaultInputFormat": null,
+           "allowAccessOutsideWorkspace": false
+           }
+       },
+       "formats": {
+         "psv": {
+           "type": "text",
+           "extensions": [
+              "tbl"
+           ],
+           "delimiter": "|"
+         },
+         "csv": {
+           "type": "text",
+           "extensions": [
+              "csv"
+           ],
+           "lineDelimiter": "\n",
+           "fieldDelimiter": ",",
+           "quote": "\"",
+           "escape": "\"",
+           "comment": "#",
+           "extractHeader": true		   		   
+         },
+         "tsv": {
+           "type": "text",
+           "extensions": [
+              "tsv"
+           ],
+           "delimiter": "\t"
+         },
+         "httpd": {
+           "type": "httpd",
+           "logFormat": "%h %t \"%r\" %>s %b \"%{Referer}i\""
+         },
+         "parquet": {
+           "type": "parquet"
+           },
+         "json": {
+            "type": "json",
+            "extensions": [
+              "json"
+            ]
+         },
+         "pcap": {
+           "type": "pcap"
+         },
+         "avro": {
+           "type": "avro"
+         },
+         "sequencefile": {
+           "type": "sequencefile",
+           "extensions": [
+             "seq"
+           ]
+         },
+         "csvh": {
+           "type": "text",
+           "extensions": [
+             "csvh"
+           ],
+           "extractHeader": true,
+           "delimiter": ","
+         },
+         "image": {
+           "type": "image",
+           "extensions": [
+             "jpg",
+             "jpeg",
+             "jpe",
+             "tif",
+             "tiff",
+             "dng",
+             "psd",
+             "png",
+             "bmp",
+             "gif",
+             "ico",
+             "pcx",
+             "wav",
+             "wave",
+             "avi",
+             "webp",
+             "mov",
+             "mp4",
+             "m4a",
+             "m4p",
+             "m4b",
+             "m4r",
+             "m4v",
+             "3gp",
+             "3g2",
+             "eps",
+             "epsf",
+             "epsi",
+             "ai",
+             "arw",
+             "crw",
+             "cr2",
+             "nef",
+             "orf",
+             "raf",
+             "rw2",
+             "rwl",
+             "srw",
+             "x3f"
+            ]
+          }
+       },
+       "enabled": true
+   }  
+}
